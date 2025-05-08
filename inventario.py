@@ -16,7 +16,7 @@ def agregar_producto(inventario_local):
                 continue
             break
         except ValueError:
-            print("\033[93m Por favor, ingrese un numero valido para el precio.\033[0m")
+            print("\033[93m Ingrese un numero valido para el precio.\033[0m")
 
     while True:
         try:
@@ -27,16 +27,18 @@ def agregar_producto(inventario_local):
                 continue
             break
         except ValueError:
-            print("\033[93m Por favor, ingrese un numero entero valido para la cantidad.\033[0m")
+            print("\033[93m Ingrese un numero entero valido para la cantidad.\033[0m")
 
-    inventario_local[nombre] = (precio, cantidad)
+    inventario_local[nombre] = {'precio': precio, 'cantidad': cantidad}
     print(f"\033[1mEl producto '{nombre}' ha sido añadido al inventario.\033[0m")
 
 def consultar_producto(inventario_local):
     print("\n\033[94m\033[1mConsultar Producto\033[0m")
     nombre = input("\033[1mIngrese el nombre del producto que desea consultar: ").strip()
     if nombre in inventario_local:
-        precio, cantidad = inventario_local[nombre]
+        info_producto = inventario_local[nombre]
+        precio = info_producto['precio']
+        cantidad = info_producto['cantidad']
         print("\033[1m" + "-" * 30 + "\033[0m")
         print(f"\033[1m| {'Producto':<15} | {nombre:<12} |\033[0m")
         print("\033[1m" + "-" * 30 + "\033[0m")
@@ -58,13 +60,14 @@ def actualizar_precio(inventario_local):
                 if nuevo_precio < 0:
                     print("\033[93mEl precio debe ser un valor positivo.\033[0m")
                     continue
-                inventario_local[nombre] = (nuevo_precio, inventario_local[nombre][1])
+                inventario_local[nombre]['precio'] = nuevo_precio
                 print(f"\033[1mEl precio de '{nombre}' ha sido actualizado a ${nuevo_precio:,.2f}.\033[0m")
                 break
             except ValueError:
                 print("\033[93mPor favor, ingrese un numero valido para el precio.\033[0m")
     else:
         print(f"\033[93m El producto '{nombre}' no se encuentra en el inventario.\033[0m")
+
 
 def eliminar_producto(inventario_local):
     print("\n\033[94m\033[1mEliminar Producto\033[0m")
@@ -77,7 +80,7 @@ def eliminar_producto(inventario_local):
 
 def calcular_valor_total(inventario_local):
     print("\n\033[94m\033[1mValor Total del Inventario\033[0m")
-    valor_total_lambda = lambda inventario: sum(precio * cantidad for precio, cantidad in inventario.values())
+    valor_total_lambda = lambda inventario: sum(producto['precio'] * producto['cantidad'] for producto in inventario.values())
     valor_total = valor_total_lambda(inventario_local)
     print(f"\033[1mEl valor total del inventario es: ${valor_total:,.2f}\033[0m")
     return valor_total
@@ -85,15 +88,14 @@ def calcular_valor_total(inventario_local):
 def mostrar_inventario(inventario_local):
     print("\n\033[94m\033[1mMostrar Inventario\033[0m")
     if not inventario_local:
-        print("\033[1mEl inventario está vacío.\033[0m")
+        print("\033[1mEl inventario está vacio.\033[0m")
         return
     print("\033[1m   Inventario Actual   \033[0m")
-    for nombre, (precio, cantidad) in inventario_local.items():
+    for nombre, info_producto in inventario_local.items():
+        precio = info_producto['precio']
+        cantidad = info_producto['cantidad']
         print(f"\033[1mProducto: {nombre}, Precio: ${precio:,.2f}, Cantidad: {cantidad}\033[0m")
     print("-" * 35)
-
-
-
 
 while True:
     print("\n\033[94m\033[1m" + "═" * 35 + "\033[0m")
@@ -104,12 +106,12 @@ while True:
     print(f"\033[1m  2. Consultar producto{''.ljust(29)}\033[0m")
     print(f"\033[1m  3. Actualizar precio{''.ljust(30)}\033[0m")
     print(f"\033[1m  4. Eliminar producto{''.ljust(30)}\033[0m")
-    print(f"\033[1m  5. Calcular valor total{''.ljust(24)}\033[0m")
+    print(f"\033[1m  5. Calcular valor total del inventario{''.ljust(24)}\033[0m")
     print(f"\033[1m  6. Mostrar inventario{''.ljust(27)}\033[0m")
     print(f"\033[1m  7. Salir{''.ljust(34)}\033[0m")
     print("\033[94m" + "═" * 35 + "\033[0m")
 
-    opcion = input("\033[94m\033[1mSeleccione una opción: \033[0m")
+    opcion = input("\033[94m\033[1mSeleccione una opcion: \033[0m")
 
     if opcion == '1':
         agregar_producto(inventario)
@@ -127,4 +129,4 @@ while True:
         print("\n\033[94m\033[1mSaliendo del programa\033[0m")
         break
     else:
-        print("\n\033[93m Opción inválida. Por favor, seleccione una opción válida.\033[0m")
+        print("\n\033[93m Opcion invalida. seleccione una opcion valida.\033[0m")
